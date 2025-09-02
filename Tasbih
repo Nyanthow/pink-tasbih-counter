@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pink Tasbih Counter</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: white url('https://www.transparenttextures.com/patterns/flowers.png') repeat;
+      background-size: cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      transition: background-color 0.3s;
+    }
+    body.dark {
+      background: #1c1c1c;
+      color: white;
+    }
+    .tasbih-container {
+      background-color: #ffe6f0;
+      border: 2px solid #ff99cc;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 0 20px rgba(255, 153, 204, 0.4);
+      text-align: center;
+      transition: background-color 0.3s;
+    }
+    body.dark .tasbih-container {
+      background-color: #333;
+      border-color: #cc66a0;
+    }
+    h1 {
+      color: #cc3366;
+      margin-bottom: 20px;
+    }
+    body.dark h1 {
+      color: #ffb6c1;
+    }
+    #counter {
+      font-size: 64px;
+      font-weight: bold;
+      color: #cc3366;
+      margin-bottom: 20px;
+    }
+    body.dark #counter {
+      color: #ffb6c1;
+    }
+    .button-group button, .preset-group button {
+      background-color: #ffb6c1;
+      border: none;
+      color: white;
+      font-size: 20px;
+      padding: 10px 20px;
+      margin: 5px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button-group button:hover, .preset-group button:hover {
+      background-color: #ff6699;
+    }
+    .preset-group {
+      margin-top: 10px;
+    }
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #999;
+    }
+    .toggle-darkmode {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #ffb6c1;
+      border: none;
+      color: white;
+      font-size: 14px;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-darkmode" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  <div class="tasbih-container">
+    <h1>🌸 Pink Tasbih Counter</h1>
+    <div id="counter">0</div>
+    <div class="button-group">
+      <button onclick="decreaseCount()">-</button>
+      <button onclick="incrementCount()">Tap</button>
+      <button onclick="resetCount()">Reset</button>
+    </div>
+    <div class="preset-group">
+      <button onclick="setGoal(33)">Subhanallah (33)</button>
+      <button onclick="setGoal(66)">Alhamdulillah (66)</button>
+      <button onclick="setGoal(99)">Allahu Akbar (99)</button>
+    </div>
+    <div class="footer">
+      Your count is saved automatically in your browser.
+    </div>
+  </div>
+
+  <audio id="click-sound" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_eb802fa3a7.mp3" preload="auto"></audio>
+
+  <script>
+    let count = localStorage.getItem('tasbihCount') ? parseInt(localStorage.getItem('tasbihCount')) : 0;
+    let goal = localStorage.getItem('tasbihGoal') ? parseInt(localStorage.getItem('tasbihGoal')) : 0;
+
+    function updateDisplay() {
+      document.getElementById('counter').textContent = count;
+    }
+
+    function incrementCount() {
+      count++;
+      localStorage.setItem('tasbihCount', count);
+      updateDisplay();
+      playClickSound();
+      vibrate();
+
+      if (goal && count === goal) {
+        alert("🎉 You reached your goal of " + goal + "!");
+      }
+    }
+
+    function decreaseCount() {
+      if (count > 0) {
+        count--;
+        localStorage.setItem('tasbihCount', count);
+        updateDisplay();
+        playClickSound();
+        vibrate();
+      }
+    }
+
+    function resetCount() {
+      count = 0;
+      localStorage.setItem('tasbihCount', count);
+      updateDisplay();
+    }
+
+    function setGoal(value) {
+      goal = value;
+      localStorage.setItem('tasbihGoal', goal);
+      alert("Goal set to " + value);
+    }
+
+    function playClickSound() {
+      const sound = document.getElementById('click-sound');
+      sound.currentTime = 0;
+      sound.play();
+    }
+
+    function vibrate() {
+      if ("vibrate" in navigator) {
+        navigator.vibrate(100);
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark");
+    }
+
+    // Initialize
+    updateDisplay();
+  </script>
+</body>
+</html>
